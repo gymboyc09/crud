@@ -4,6 +4,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 
@@ -12,13 +13,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(session({
-    secret: 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: true
 }));
 
 // MongoDB Connection
-mongoose.connect('mongodb+srv://gymboyc:19i1AQKLoMSt0R1W@cluster0.xtfjz9l.mongodb.net/student_results', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://gymboyc:19i1AQKLoMSt0R1W@cluster0.xtfjz9l.mongodb.net/student_results', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
