@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Results</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Student Results Portal</h1>
+        <div class="search-box">
+            <input type="text" id="studentNo" placeholder="Enter Student Roll Number">
+            <button onclick="searchStudent()">Search</button>
+        </div>
+        <div id="result" class="result-box">
+            <div id="studentInfo"></div>
+        </div>
+        <div class="admin-link">
+            <a href="/admin-login.html">Admin Login</a>
+        </div>
+    </div>
+    <script>
+        async function searchStudent() {
+            const studentNo = document.getElementById('studentNo').value;
+            if (!studentNo) {
+                alert('Please enter a roll number');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/students/${studentNo}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('studentInfo').innerHTML = `
+                        <h2>Student Details</h2>
+                        <p><strong>Roll Number:</strong> ${data.studentNo}</p>
+                        <p><strong>Name:</strong> ${data.studentName}</p>
+                        <p><strong>English Marks:</strong> ${data.english}</p>
+                        <p><strong>Hindi Marks:</strong> ${data.hindi}</p>
+                    `;
+                } else {
+                    document.getElementById('studentInfo').innerHTML = `
+                        <p class="error">${data.message}</p>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('studentInfo').innerHTML = `
+                    <p class="error">Error searching for student</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

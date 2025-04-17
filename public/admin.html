@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel</h1>
+        <div class="admin-form">
+            <h2>Add Student Results</h2>
+            <input type="text" id="studentNo" placeholder="Student Roll Number">
+            <input type="text" id="studentName" placeholder="Student Name">
+            <input type="number" id="english" placeholder="English Marks">
+            <input type="number" id="hindi" placeholder="Hindi Marks">
+            <button onclick="addStudent()">Add Student</button>
+            <p id="message"></p>
+        </div>
+        <div class="back-link">
+            <a href="/">Back to Home</a>
+        </div>
+    </div>
+    <script>
+        async function addStudent() {
+            const studentNo = document.getElementById('studentNo').value;
+            const studentName = document.getElementById('studentName').value;
+            const english = document.getElementById('english').value;
+            const hindi = document.getElementById('hindi').value;
+
+            if (!studentNo || !studentName || !english || !hindi) {
+                document.getElementById('message').textContent = 'Please fill all fields';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/students', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentNo,
+                        studentName,
+                        english: parseInt(english),
+                        hindi: parseInt(hindi)
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById('message').textContent = 'Student added successfully';
+                    // Clear form
+                    document.getElementById('studentNo').value = '';
+                    document.getElementById('studentName').value = '';
+                    document.getElementById('english').value = '';
+                    document.getElementById('hindi').value = '';
+                } else {
+                    const data = await response.json();
+                    document.getElementById('message').textContent = data.message;
+                }
+            } catch (error) {
+                document.getElementById('message').textContent = 'Error adding student';
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Login</h1>
+        <div class="login-form">
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p id="error" class="error"></p>
+        </div>
+        <div class="back-link">
+            <a href="/">Back to Home</a>
+        </div>
+    </div>
+    <script>
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                document.getElementById('error').textContent = 'Please enter both username and password';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    document.getElementById('error').textContent = data.message;
+                }
+            } catch (error) {
+                document.getElementById('error').textContent = 'Error during login';
+            }
+        }
+    </script>
+</body>
+</html> 
